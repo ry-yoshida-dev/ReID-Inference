@@ -51,8 +51,9 @@ class TransReID(ReIDEncoder[TransReIDParameters]):
         torch.nn.Module:
             The backbone of the model.
         """
-        import sys
-        sys.path.append("src/external/TransReID-SSL/transreid_pytorch")
+        from ...external_paths import TRANSREID_PYTORCH_ROOT, ensure_syspath
+
+        ensure_syspath(TRANSREID_PYTORCH_ROOT)
 
         match model_name:
             case 'vit_base_patch16_224_TransReID' | 'deit_base_patch16_224_TransReID':

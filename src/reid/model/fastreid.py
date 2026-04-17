@@ -1,13 +1,14 @@
-
-import sys
-import os
 import logging
+from pathlib import Path
+from typing import cast
+
 import torch
 
 from ..encoder import ReIDEncoder
+from ..external_paths import FAST_REID_IMPORT_ROOT, FAST_REID_ROOT, ensure_syspath
 from ..parameters import ReIDParameters
 
-sys.path.append("./src/external")
+ensure_syspath(FAST_REID_IMPORT_ROOT)
 from fast_reid.fastreid.config import get_cfg # type: ignore
 from fast_reid.fastreid.modeling.meta_arch import build_model # type: ignore
 
@@ -41,8 +42,8 @@ class FastReID(ReIDEncoder[ReIDParameters]):
 
         logger.info("%s from fast-reid is adopted as the ReID model.", model_name)
         
-        config_file = f"./src/external/fast_reid/configs/MOT17/{model_name}.yml" #TODO
-        if not os.path.exists(config_file):
+        config_file = str(FAST_REID_ROOT / "configs" / "MOT17" / f"{model_name}.yml")  # TODO
+        if not Path(config_file).is_file():
             raise FileNotFoundError(f"config_file not found in {config_file}. {model_name} might not be a supported model for FastReID.")
         cfg = setup_cfg( # type: ignore
             config_file,

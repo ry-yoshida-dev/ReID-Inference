@@ -1,9 +1,9 @@
-import sys
 import logging
 import torch
 from typing import cast
 
 from ..encoder import ReIDEncoder
+from ..external_paths import DEEP_PERSON_REID_ROOT, ensure_syspath
 from ..parameters import ReIDParameters
 
 logger = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ class TorchReID(ReIDEncoder[ReIDParameters]):
         weights_path = self.parameters.weights_path
 
         logger.info("%s from Torchreid is adopted as the ReID model.", model_name)
-        sys.path.append("./src/external/deep-person-reid")
+        ensure_syspath(DEEP_PERSON_REID_ROOT)
 
         from torchreid.models import build_model # type: ignore
         from torchreid.utils import load_pretrained_weights # type: ignore
