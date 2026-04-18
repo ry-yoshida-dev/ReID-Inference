@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import TypeVar
 
-from .names import ReID_Library
+from .backends import ReIDBackend
 from torch_modules import TorchParameters
 
 # For Generic ReIDEncoder[TP]; subclasses (e.g. TransReIDParameters) use this bound.
@@ -11,15 +11,15 @@ ReIDParametersT = TypeVar("ReIDParametersT", bound="ReIDParameters")
 @dataclass(kw_only=True)
 class ReIDParameters(TorchParameters):
     """
-    The parameters for the reid model.
+    Shared ReID fields; subclasses add backend-specific options.
 
-    Parameters:
+    Attributes:
     ----------
-    library_name: ReIDName
-        The name of the reid library.
-    model_name: str
-        The name of the reid model.
+    backend : ReIDBackend
+        Backend selector (must match encoder).
+    model_name : str
+        Torchreid name, FastReID YAML stem, or TransReID backbone key.
     """
-    library_name: ReID_Library
+    backend: ReIDBackend
     model_name: str
 

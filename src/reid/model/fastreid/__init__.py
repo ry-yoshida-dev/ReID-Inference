@@ -5,20 +5,15 @@ from __future__ import annotations
 from .preprocess import DEFAULT_PREPROCESSOR_CONFIG, build_default_torch_preprocessor
 
 __all__ = [
-    "TransReID",
-    "TransReIDParameters",
+    "FastReID",
     "DEFAULT_PREPROCESSOR_CONFIG",
     "build_default_torch_preprocessor",
 ]
 
 
 def __getattr__(name: str):
-    if name == "TransReID":
-        from .model import TransReID
+    if name == "FastReID":
+        from .model import FastReID
 
-        return TransReID
-    if name == "TransReIDParameters":
-        from .parameter import TransReIDParameters
-
-        return TransReIDParameters
+        return FastReID
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

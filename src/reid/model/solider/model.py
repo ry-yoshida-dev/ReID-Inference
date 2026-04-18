@@ -1,6 +1,6 @@
-
-
 """
+SOLIDER 連携メモ（未実装）。
+
             case "SOLIDER":
                 sys.path.append("SOLIDER-REID")
                 from model import make_model
@@ -12,8 +12,7 @@
 
                 model = make_model(cfg, num_class=1, camera_num=1, view_num=1, semantic_weight=cfg.MODEL.SEMANTIC_WEIGHT)
                 model.load_param(model_path)
-                
+
             case "TransReID":
                 NotImplementedError
-                
-"""   
+"""

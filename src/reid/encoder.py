@@ -24,7 +24,7 @@ class ReIDEncoder(ABC, Generic[ReIDParametersT]):
     Attributes:
     ----------
     preprocessor: TorchPreprocessor
-        The preprocessor for the ReIDEncoder.
+        TorchModules dict; typical build: parameters.backend.build_default_preprocessor() or the chosen backend's preprocess.DEFAULT_PREPROCESSOR_CONFIG.
     parameters: ReIDParametersT
         The parameters for the ReIDEncoder (ReIDParameters or a subclass).
     torch_inference_manager: TorchInferenceManager
@@ -61,18 +61,18 @@ class ReIDEncoder(ABC, Generic[ReIDParametersT]):
         xyxy_bboxes: np.ndarray
         ) -> np.ndarray:
         """
-        Predict the output of the model from the cropped image.
+        Run the model on crops defined by xyxy_bboxes in pixel coordinates.
 
         Parameters:
         ----------
         image: Image.Image
-            The cropped image to predict the output of the model.
+            Full RGB image the boxes refer to.
         xyxy_bboxes: np.ndarray
-            The bounding boxes of the objects with (x1, y1, x2, y2) format in the image.
+            Bounding boxes (x1, y1, x2, y2) in the same coordinate system as image.
 
         Returns:
         -------
-        np.ndarray: The output tensor of the model.
+        np.ndarray: Feature rows of shape (N, D) for N boxes, or empty when N is 0.
         """
         if len(xyxy_bboxes) == 0:
             return np.array([])
@@ -88,7 +88,15 @@ class ReIDEncoder(ABC, Generic[ReIDParametersT]):
         images: list[Image.Image]
         ) -> np.ndarray:
         """
-        Predict the output of the model from the list of images.
+        One feature row per image (N, D).
+
+        Parameters:
+        ----------
+        images : list[Image.Image]
+
+        Returns:
+        -------
+        np.ndarray
         """
         dataset: TorchTensorDataset = ImagesDataset(
             images=images,
@@ -124,9 +132,9 @@ class ReIDEncoder(ABC, Generic[ReIDParametersT]):
             )
 
         outputs: list[torch.Tensor] = []
-        for _, input in data_loader:
-            input = self.torch_inference_manager.preprocess_input(input_=input)
-            output = self.model(input)
+        for _, batch in data_loader:
+            batch = self.torch_inference_manager.preprocess_input(input_=batch)
+            output = self.model(batch)
             outputs.append(output)
         combined = torch.cat(outputs, dim=0).detach().cpu().numpy()
         if self.parameters.is_half_precision_enabled and self.torch_inference_manager.is_gpu_available:
@@ -140,5 +148,4 @@ class ReIDEncoder(ABC, Generic[ReIDParametersT]):
     @property
     def is_gpu_available(self) -> bool:
         return self.torch_inference_manager.is_gpu_available
-
 

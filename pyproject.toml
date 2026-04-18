@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reid-inference"
+version = "0.1.0"
+authors = [{ name = "Ryuto Yoshida" }]
+description = "Person re-identification inference helpers and backend wrappers."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "torch",
+    "torchvision",
+    "tensorboard",
+    "opencv-contrib-python",
+    "pillow",
+    "scipy",
+    "gdown",
+    "yacs",
+    "termcolor",
+    "torch_modules @ git+https://github.com/ry-yoshida-private/TorchModules.git",
+]
+
+[project.optional-dependencies]
+dev = [
+    "build>=1.0.0",
+    "twine>=5.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/ry-yoshida-private/ReID-Inference"
+"Bug Tracker" = "https://github.com/ry-yoshida-private/ReID-Inference/issues"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]

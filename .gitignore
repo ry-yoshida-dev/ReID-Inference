@@ -1,2 +1,10 @@
 __pycache__/
 *.egg-info/
+/weights
+*.npy
+*.jpg
+*.jpeg
+*.JPG
+*.png
+*.PNG
+
