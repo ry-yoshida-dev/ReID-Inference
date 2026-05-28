@@ -25,7 +25,7 @@ dependencies = [
     "gdown",
     "yacs",
     "termcolor",
-    "torch_modules @ git+https://github.com/ry-yoshida-private/TorchModules.git",
+    "torch_modules @ git+https://github.com/ry-yoshida-dev/TorchModules.git",
 ]
 
 [project.optional-dependencies]
@@ -35,8 +35,8 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/ry-yoshida-private/ReID-Inference"
-"Bug Tracker" = "https://github.com/ry-yoshida-private/ReID-Inference/issues"
+Homepage = "https://github.com/ry-yoshida-dev/ReID-Inference"
+"Bug Tracker" = "https://github.com/ry-yoshida-dev/ReID-Inference/issues"
 
 [tool.setuptools]
 include-package-data = true

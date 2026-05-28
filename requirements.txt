@@ -10,4 +10,4 @@ gdown
 yacs
 termcolor
 
-torch_modules @ git+https://github.com/ry-yoshida-private/TorchModules.git
+torch_modules @ git+https://github.com/ry-yoshida-dev/TorchModules.git
