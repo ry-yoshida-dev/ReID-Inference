@@ -1,0 +1,16 @@
+torch 
+torchvision
+tensorboard
+opencv-contrib-python
+pillow
+scipy
+gdown
+
+# for fastreid
+yacs
+termcolor
+
+torch_modules @ git+https://github.com/ry-yoshida-private/TorchModules.git
+deep-person-reid @ git+https://github.com/ry-yoshida-dev/deep-person-reid.git
+fast-reid @ git+https://github.com/ry-yoshida-dev/fast-reid.git
+transreid-ssl @ git+https://github.com/ry-yoshida-dev/TransReID-SSL.git
