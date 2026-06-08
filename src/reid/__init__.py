@@ -1,22 +1,63 @@
 """Re-identification inference."""
 
-# Subpackages are loaded lazily via __getattr__; __all__ documents the public API.
-# pyright: reportUnsupportedDunderAll=false
-
 from __future__ import annotations
 
 import importlib
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+from .backends import ReIDBackend
+from .parameters import ReIDParameters, ReIDParametersT
+
+# Core symbols are imported eagerly; encoders and subpackages load lazily via __getattr__.
+# pyright: reportUnsupportedDunderAll=false
 
 __all__ = [
+    "ReIDBackend",
+    "ReIDEncoder",
+    "ReIDParameters",
+    "ReIDParametersT",
+    "FastReID",
+    "TorchReID",
+    "TransReID",
+    "TorchReIDParameters",
+    "TransReIDParameters",
     "backends",
     "encoder",
     "model",
     "parameters",
 ]
 
+_LAZY_FROM_ENCODER = frozenset({"ReIDEncoder"})
+_LAZY_FROM_MODEL = frozenset(
+    {
+        "FastReID",
+        "TorchReID",
+        "TransReID",
+        "TorchReIDParameters",
+        "TransReIDParameters",
+    }
+)
+_LAZY_SUBMODULES = frozenset({"backends", "encoder", "model", "parameters"})
+
+if TYPE_CHECKING:
+    from .encoder import ReIDEncoder
+    from .model import (
+        FastReID,
+        TorchReID,
+        TorchReIDParameters,
+        TransReID,
+        TransReIDParameters,
+    )
+
 
 def __getattr__(name: str) -> Any:
-    if name in __all__:
+    if name in _LAZY_FROM_ENCODER:
+        from .encoder import ReIDEncoder
+
+        return ReIDEncoder
+    if name in _LAZY_FROM_MODEL:
+        model = importlib.import_module(f"{__name__}.model")
+        return getattr(model, name)
+    if name in _LAZY_SUBMODULES:
         return importlib.import_module(f"{__name__}.{name}")
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
