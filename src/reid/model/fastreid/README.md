@@ -6,14 +6,16 @@ This subtree integrates **[FastReID](https://github.com/JDAI-CV/fast-reid)** via
 
 ## CLI
 
-From the repository root, with `src` on `PYTHONPATH`:
+From the repository root (after `pip install .`):
 
 ```bash
-python3 -m reid.model.fastreid.model \
+reid-extract fastreid \
   --weights weights/mot17_sbs_S50.pth \
   --images-dir image \
   --output-dir result
 ```
+
+Without installing: `PYTHONPATH=src python3 main.py fastreid ...` (same flags).
 
 ### Common arguments
 
@@ -73,5 +75,5 @@ print(crop_features.shape)
 
 | Component | Description |
 | --------- | ----------- |
-| [`model.py`](model.py) | `FastReID` encoder, YACS `setup_cfg`, and `python -m` CLI entry. |
+| [`model.py`](model.py) | `FastReID` encoder and YACS `setup_cfg`. |
 | [`preprocess.py`](preprocess.py) | Default `TorchPreprocessor` builder for this backend. |

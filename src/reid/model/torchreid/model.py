@@ -4,19 +4,19 @@ import torch
 from torchreid.models import build_model
 from torchreid.utils import load_pretrained_weights
 
-from ...encoder import ReIDEncoder
+from ...encoder import BaseReIDEncoder
 from .parameter import TorchReIDParameters
 
 logger = logging.getLogger(__name__)
 
 
-class TorchReID(ReIDEncoder[TorchReIDParameters]):
+class TorchReID(BaseReIDEncoder[TorchReIDParameters]):
     """
     Torchreid via the packaged deep-person-reid distribution (import name: torchreid).
 
     Attributes:
     ----------
-    Same as ReIDEncoder; see TorchReIDParameters for model_name / num_classes / weights, etc.
+    Same as BaseReIDEncoder; see TorchReIDParameters for model_name / num_classes / weights, etc.
     """
 
     def _load_model(self) -> torch.nn.Module:
@@ -42,9 +42,3 @@ class TorchReID(ReIDEncoder[TorchReIDParameters]):
 
     def __str__(self) -> str:
         return f"TorchReID(model_name={self.parameters.model_name}, weights_path={self.parameters.weights_path})"
-
-
-if __name__ == "__main__":
-    from ...cli.feature_parsers import run_torchreid_feature_extract_main
-
-    run_torchreid_feature_extract_main()

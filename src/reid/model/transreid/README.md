@@ -6,14 +6,16 @@ This subtree integrates **TransReID** via the pip package [`transreid-ssl`](http
 
 ## CLI
 
-From the repository root, with `src` on `PYTHONPATH`:
+From the repository root (after `pip install .`):
 
 ```bash
-python3 -m reid.model.transreid.model \
+reid-extract transreid \
   --weights weights/vit_small_cfs_lup.pth \
   --images-dir image \
   --output-dir result
 ```
+
+Without installing: `PYTHONPATH=src python3 main.py transreid ...` (same flags).
 
 ### Common arguments
 
@@ -77,6 +79,6 @@ print(crop_features.shape)
 
 | Component | Description |
 | --------- | ----------- |
-| [`model.py`](model.py) | `TransReID` encoder and `python -m` CLI entry. |
+| [`model.py`](model.py) | `TransReID` encoder. |
 | [`parameter.py`](parameter.py) | `TransReIDParameters` (input size, stride, `hw_ratio`, etc.). |
 | [`preprocess.py`](preprocess.py) | Default `TorchPreprocessor` builder for this backend. |

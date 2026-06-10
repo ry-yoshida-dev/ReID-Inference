@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import torch
 import numpy as np
 from PIL import Image
@@ -5,6 +7,8 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Generic
 from torch.utils.data import DataLoader
+
+from .array_types import FloatArray, NumericArray
 
 from .parameters import ReIDParametersT
 from torch_modules import (
@@ -17,20 +21,20 @@ from torch_modules import (
 
 
 @dataclass
-class ReIDEncoder(ABC, Generic[ReIDParametersT]):
+class BaseReIDEncoder(ABC, Generic[ReIDParametersT]):
     """
-    Re-identification encoder: preprocesses inputs and runs inference.
+    Abstract base class for ReID encoder backend implementations.
 
     Attributes:
     ----------
     preprocessor: TorchPreprocessor
         TorchModules dict; typical build: parameters.backend.build_default_preprocessor() or the chosen backend's preprocess.DEFAULT_PREPROCESSOR_CONFIG.
     parameters: ReIDParametersT
-        The parameters for the ReIDEncoder (ReIDParameters or a subclass).
+        The parameters for the encoder (ReIDParameters or a subclass).
     torch_inference_manager: TorchInferenceManager
-        The torch inference manager for the ReIDEncoder.
+        The torch inference manager for the encoder.
     model: torch.nn.Module
-        The model for the ReIDEncoder.
+        The model for the encoder.
     """
 
     preprocessor: TorchPreprocessor
@@ -56,10 +60,10 @@ class ReIDEncoder(ABC, Generic[ReIDParametersT]):
         """
 
     def predict_from_image(
-        self, 
+        self,
         image: Image.Image,
-        xyxy_bboxes: np.ndarray
-        ) -> np.ndarray:
+        xyxy_bboxes: NumericArray,
+    ) -> FloatArray:
         """
         Run the model on crops defined by xyxy_bboxes in pixel coordinates.
 
@@ -67,12 +71,12 @@ class ReIDEncoder(ABC, Generic[ReIDParametersT]):
         ----------
         image: Image.Image
             Full RGB image the boxes refer to.
-        xyxy_bboxes: np.ndarray
+        xyxy_bboxes: NumericArray
             Bounding boxes (x1, y1, x2, y2) in the same coordinate system as image.
 
         Returns:
         -------
-        np.ndarray: Feature rows of shape (N, D) for N boxes, or empty when N is 0.
+        FloatArray: Feature rows of shape (N, D) for N boxes, or empty when N is 0.
         """
         if len(xyxy_bboxes) == 0:
             return np.array([])
@@ -85,8 +89,8 @@ class ReIDEncoder(ABC, Generic[ReIDParametersT]):
 
     def predict_from_images(
         self,
-        images: list[Image.Image]
-        ) -> np.ndarray:
+        images: list[Image.Image],
+    ) -> FloatArray:
         """
         One feature row per image (N, D).
 
@@ -96,7 +100,7 @@ class ReIDEncoder(ABC, Generic[ReIDParametersT]):
 
         Returns:
         -------
-        np.ndarray
+        FloatArray
         """
         dataset: TorchTensorDataset = ImagesDataset(
             images=images,
@@ -107,8 +111,8 @@ class ReIDEncoder(ABC, Generic[ReIDParametersT]):
     @torch.no_grad()
     def _predict_from_dataset(
         self,
-        dataset: TorchTensorDataset
-        ) -> np.ndarray:
+        dataset: TorchTensorDataset,
+    ) -> FloatArray:
         """
         Predict the output of the model from the dataset.
 
@@ -122,7 +126,7 @@ class ReIDEncoder(ABC, Generic[ReIDParametersT]):
 
         Returns:
         -------
-        np.ndarray: The output tensor of the model.
+        FloatArray: The output tensor of the model.
             The shape is (N, D), where N is the number of samples in the dataset and D is the dimension of the output.
         """
         data_loader = DataLoader(

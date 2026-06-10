@@ -38,12 +38,16 @@ dev = [
     "twine>=5.0.0",
 ]
 
+[project.scripts]
+reid-extract = "main:main"
+
 [project.urls]
 Homepage = "https://github.com/ry-yoshida-dev/ReID-Inference"
 "Bug Tracker" = "https://github.com/ry-yoshida-dev/ReID-Inference/issues"
 
 [tool.setuptools]
 include-package-data = true
+py-modules = ["main"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -32,25 +32,27 @@ pip install -r requirements.txt
 
 ## Example
 
-After `pip install .`, run a backend-specific feature extractor from any directory (see also [src/reid/model/torchreid/README.md](src/reid/model/torchreid/README.md), [src/reid/model/fastreid/README.md](src/reid/model/fastreid/README.md), [src/reid/model/transreid/README.md](src/reid/model/transreid/README.md)):
+After `pip install .`, run from the repository root:
 
 ```bash
-python3 -m reid.model.torchreid.model \
+reid-extract torchreid \
   --weights osnet_ain_ms_d_c.pth \
   --images-dir image \
   --output-dir result
 ```
 
-From a checkout without installing the package, use `PYTHONPATH=src` instead:
+From a checkout without installing the package:
 
 ```bash
 cd /path/to/ReID-Inference
 export PYTHONPATH=src
-python3 -m reid.model.torchreid.model \
+python3 main.py torchreid \
   --weights osnet_ain_ms_d_c.pth \
   --images-dir image \
   --output-dir result
 ```
+
+Backend-specific flags are documented in [src/reid/model/torchreid/README.md](src/reid/model/torchreid/README.md), [src/reid/model/fastreid/README.md](src/reid/model/fastreid/README.md), and [src/reid/model/transreid/README.md](src/reid/model/transreid/README.md).
 
 Weights must match the architecture (`--model-name` and related flags differ per backend).
 

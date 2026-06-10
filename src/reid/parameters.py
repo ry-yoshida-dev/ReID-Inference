@@ -4,7 +4,7 @@ from typing import TypeVar
 from .backends import ReIDBackend
 from torch_modules import TorchParameters
 
-# For Generic ReIDEncoder[TP]; subclasses (e.g. TransReIDParameters) use this bound.
+# For Generic BaseReIDEncoder[TP]; subclasses (e.g. TransReIDParameters) use this bound.
 ReIDParametersT = TypeVar("ReIDParametersT", bound="ReIDParameters")
 
 

@@ -16,8 +16,9 @@ from reid import ReIDBackend, ReIDEncoder, ReIDParameters, TorchReID, TorchReIDP
 | ------ | ---- |
 | `ReIDBackend` | Backend enum (`TORCHREID`, `FASTREID`, `TRANSREID`). |
 | `ReIDParameters` | Shared parameter dataclass; FastReID uses this type directly. |
-| `ReIDParametersT` | TypeVar bound for `ReIDEncoder[TP]`. |
-| `ReIDEncoder` | Abstract encoder base class. |
+| `ReIDParametersT` | TypeVar bound for `BaseReIDEncoder[TP]`. |
+| `ReIDEncoder` | Public encoder protocol for callers. |
+| `BaseReIDEncoder` | Abstract encoder base class for backend implementations. |
 | `TorchReID`, `FastReID`, `TransReID` | Concrete encoder implementations. |
 | `TorchReIDParameters`, `TransReIDParameters` | Backend-specific parameter subclasses. |
 
@@ -35,7 +36,15 @@ Library selection and defaults are exposed via [`ReIDBackend`](backends.py) (`TO
 
 ## CLI feature extraction
 
-Each backend’s `model` module is runnable as `__main__` and writes **one `.npy` per input image** (stem = image file stem). Common flags: `--images-dir`, `--output-dir`, `--weights` (required), `--batch-size`, `--no-fp16`. Backend-specific flags are documented under:
+Run from the repository root (see [main.py](../../main.py) at repo root):
+
+```bash
+reid-extract torchreid --weights osnet_ain_ms_d_c.pth --images-dir image --output-dir result
+reid-extract fastreid --weights weights/mot17_sbs_S50.pth --images-dir image --output-dir result
+reid-extract transreid --weights weights/vit_small_cfs_lup.pth --images-dir image --output-dir result
+```
+
+Common options: `--images-dir`, `--output-dir`, `--weights` (required), `--batch-size`, `--no-fp16`. Backend-specific flags are documented under:
 
 - [model/torchreid/README.md](model/torchreid/README.md)
 - [model/fastreid/README.md](model/fastreid/README.md)
@@ -45,11 +54,11 @@ Each backend’s `model` module is runnable as `__main__` and writes **one `.npy
 
 | Component | Description |
 | --------- | ----------- |
-| [`encoder.py`](encoder.py) | Abstract `ReIDEncoder`: loads weights, wraps `TorchInferenceManager`, `predict_from_image(s)`. |
+| [`array_types.py`](array_types.py) | `NumericArray` and `FloatArray` NumPy dtype aliases. |
+| [`protocol.py`](protocol.py) | `ReIDEncoder` protocol: public interface for callers. |
+| [`encoder.py`](encoder.py) | Abstract `BaseReIDEncoder`: loads weights, wraps `TorchInferenceManager`, `predict_from_image(s)`. |
 | [`parameters.py`](parameters.py) | Shared `ReIDParameters` (extends TorchModules `TorchParameters`). |
 | [`backends.py`](backends.py) | `ReIDBackend` enum: encoder class, parameter class, default preprocessor builder. |
-| [`cli/feature_extract.py`](cli/feature_extract.py) | Shared CLI helpers: image listing, batching, `.npy` output. |
-| [`cli/feature_parsers.py`](cli/feature_parsers.py) | Argparse entrypoints for each backend’s feature script. |
 | [model/torchreid/](model/torchreid/README.md) | Torchreid integration. |
 | [model/fastreid/](model/fastreid/README.md) | FastReID integration. |
 | [model/transreid/](model/transreid/README.md) | TransReID integration. |

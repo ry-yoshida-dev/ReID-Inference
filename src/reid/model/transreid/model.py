@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 import logging
-from typing import Callable, Protocol, cast
+from typing import Protocol, cast
 
 import torch
 
 from transreid_pytorch.model.backbones import get_backbone
 
 from .parameter import TransReIDParameters
-from ...encoder import ReIDEncoder
+from ...encoder import BaseReIDEncoder
 
 logger = logging.getLogger(__name__)
 
@@ -25,13 +25,13 @@ class _SwinLoadParam(Protocol):
     def load_param(self, model_path: str, /) -> None: ...
 
 
-class TransReID(ReIDEncoder[TransReIDParameters]):
+class TransReID(BaseReIDEncoder[TransReIDParameters]):
     """
     TransReID via the packaged transreid-ssl distribution.
 
     Attributes:
     ----------
-    Same as ReIDEncoder; see TransReIDParameters and get_backbone for model_name keys.
+    Same as BaseReIDEncoder; see TransReIDParameters and get_backbone for model_name keys.
     """
 
     def _load_model(self) -> torch.nn.Module:
@@ -60,9 +60,3 @@ class TransReID(ReIDEncoder[TransReIDParameters]):
             )
         logger.info("Loaded weights from %s", weights_path)
         return model
-
-
-if __name__ == "__main__":
-    from ...cli.feature_parsers import run_transreid_feature_extract_main
-
-    run_transreid_feature_extract_main()

@@ -6,14 +6,16 @@ This subtree integrates **[Torchreid](https://kaiyangzhou.github.io/deep-person-
 
 ## CLI
 
-From the repository root, with `src` on `PYTHONPATH`:
+From the repository root (after `pip install .`):
 
 ```bash
-python3 -m reid.model.torchreid.model \
+reid-extract torchreid \
   --weights osnet_ain_ms_d_c.pth \
   --images-dir image \
   --output-dir result
 ```
+
+Without installing: `PYTHONPATH=src python3 main.py torchreid ...` (same flags).
 
 ### Common arguments
 
@@ -73,6 +75,6 @@ print(crop_features.shape)
 
 | Component | Description |
 | --------- | ----------- |
-| [`model.py`](model.py) | `TorchReID` encoder and `python -m` CLI entry. |
+| [`model.py`](model.py) | `TorchReID` encoder. |
 | [`parameter.py`](parameter.py) | `TorchReIDParameters` (`model_name`, `num_classes`, …). |
 | [`preprocess.py`](preprocess.py) | Default `TorchPreprocessor` builder for this backend. |

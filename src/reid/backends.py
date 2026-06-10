@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, cast
 if TYPE_CHECKING:
     from torch_modules import TorchPreprocessor
 
-    from .model import FastReID, TorchReID, TransReID
+    from .encoder import BaseReIDEncoder
     from .parameters import ReIDParameters
 
 
@@ -48,21 +48,24 @@ class ReIDBackend(Enum):
                 return cast("type[ReIDParameters]", TransReIDParameters)
 
     @property
-    def encoder_class(self) -> "type[TorchReID] | type[FastReID] | type[TransReID]":  # pyright: ignore
+    def encoder_class(self) -> "type[BaseReIDEncoder[ReIDParameters]]":
         """Encoder class for this member (TorchReID / FastReID / TransReID)."""
+        
+        encoder_cls: type[BaseReIDEncoder[ReIDParameters]]
         match self:
             case ReIDBackend.TORCHREID:
                 from .model import TorchReID
 
-                return TorchReID
+                encoder_cls = cast(type[BaseReIDEncoder[ReIDParameters]], TorchReID)
             case ReIDBackend.FASTREID:
                 from .model import FastReID
 
-                return FastReID
+                encoder_cls = cast(type[BaseReIDEncoder[ReIDParameters]], FastReID)
             case ReIDBackend.TRANSREID:
                 from .model import TransReID
 
-                return TransReID
+                encoder_cls = cast(type[BaseReIDEncoder[ReIDParameters]], TransReID)
+        return encoder_cls
 
     def build_default_preprocessor(self, *, is_v2_enabled: bool = True) -> TorchPreprocessor:
         """

@@ -6,10 +6,10 @@ import torch
 
 from fast_reid import CONFIG_ROOT
 from fast_reid.fastreid.config import get_cfg
-from fast_reid.fastreid.modeling.meta_arch import build_model
+from fast_reid.fastreid.modeling.meta_arch import build_model # type: ignore
 from fast_reid.fastreid.utils.checkpoint import Checkpointer
 
-from ...encoder import ReIDEncoder
+from ...encoder import BaseReIDEncoder
 from ...parameters import ReIDParameters
 
 logger = logging.getLogger(__name__)
@@ -22,21 +22,21 @@ def setup_cfg(
 ):
     cfg = get_cfg()
     cfg.merge_from_file(config_file)
-    cfg.merge_from_list(opts)
-    cfg.MODEL.BACKBONE.PRETRAIN = False
+    cfg.merge_from_list(opts) # type: ignore
+    cfg.MODEL.BACKBONE.PRETRAIN = False # type: ignore
     if force_cpu:
-        cfg.MODEL.DEVICE = "cpu"
+        cfg.MODEL.DEVICE = "cpu" # type: ignore
     cfg.freeze()
     return cfg
 
 
-class FastReID(ReIDEncoder[ReIDParameters]):
+class FastReID(BaseReIDEncoder[ReIDParameters]):
     """
     FastReID via the packaged fast-reid distribution (import: fast_reid.fastreid).
 
     Attributes:
     ----------
-    Same as ReIDEncoder; model_name is YAML stem under bundled configs/MOT17.
+    Same as BaseReIDEncoder; model_name is YAML stem under bundled configs/MOT17.
     """
 
     def _load_model(self) -> torch.nn.Module:
@@ -67,9 +67,3 @@ class FastReID(ReIDEncoder[ReIDParameters]):
         Checkpointer(model).load(weights_path)
 
         return model
-
-
-if __name__ == "__main__":
-    from ...cli.feature_parsers import run_fastreid_feature_extract_main
-
-    run_fastreid_feature_extract_main()
