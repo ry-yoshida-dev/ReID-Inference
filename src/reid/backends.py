@@ -56,15 +56,15 @@ class ReIDBackend(Enum):
             case ReIDBackend.TORCHREID:
                 from .model import TorchReID
 
-                encoder_cls = cast(type[BaseReIDEncoder[ReIDParameters]], TorchReID)
+                encoder_cls = cast("type[BaseReIDEncoder[ReIDParameters]]", TorchReID)
             case ReIDBackend.FASTREID:
                 from .model import FastReID
 
-                encoder_cls = cast(type[BaseReIDEncoder[ReIDParameters]], FastReID)
+                encoder_cls = cast("type[BaseReIDEncoder[ReIDParameters]]", FastReID)
             case ReIDBackend.TRANSREID:
                 from .model import TransReID
 
-                encoder_cls = cast(type[BaseReIDEncoder[ReIDParameters]], TransReID)
+                encoder_cls = cast("type[BaseReIDEncoder[ReIDParameters]]", TransReID)
         return encoder_cls
 
     def build_default_preprocessor(self, *, is_v2_enabled: bool = True) -> TorchPreprocessor:
